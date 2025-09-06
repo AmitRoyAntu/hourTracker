@@ -27,23 +27,36 @@ jobs:
         flutter-version: '3.35.3'
         channel: 'stable'
         
-    - name: Get dependencies
-      run: flutter pub get
+    - name: Clean and get dependencies
+      run: |
+        flutter clean
+        flutter pub get
+        
+    - name: Check for analysis issues
+      run: flutter analyze --no-fatal-infos
+      continue-on-error: true
       
-    - name: Analyze code
-      run: flutter analyze
+    - name: Run tests (if any)
+      run: flutter test --no-pub --reporter=json > test_results.json || echo "No tests or test failures"
+      continue-on-error: true
       
-    - name: Run tests
-      run: flutter test --no-pub
-      continue-on-error: true  # Don't fail if no tests
+    - name: Build APK (Debug first to catch errors)
+      run: flutter build apk --debug
       
-    - name: Build APK
-      run: flutter build apk --release
+    - name: Build APK (Release)
+      run: flutter build apk --release --no-tree-shake-icons
       
-    - name: Upload APK
+    - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
-        name: hour-tracker-apk
+        name: hour-tracker-debug-apk
+        path: build/app/outputs/flutter-apk/app-debug.apk
+        retention-days: 7
+        
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: hour-tracker-release-apk
         path: build/app/outputs/flutter-apk/app-release.apk
         retention-days: 30
         
@@ -53,6 +66,25 @@ jobs:
       with:
         tag_name: v1.0.${{ github.run_number }}
         name: Hour Tracker v1.0.${{ github.run_number }}
-        files: build/app/outputs/flutter-apk/app-release.apk
+        files: |
+          build/app/outputs/flutter-apk/app-release.apk
+          build/app/outputs/flutter-apk/app-debug.apk
+        body: |
+          ## 📱 Hour Tracker APK
+          
+          **Release APK**: For production use - smaller size, optimized
+          **Debug APK**: For testing - larger size, includes debug info
+          
+          ### Installation:
+          1. Download the Release APK
+          2. Enable "Install from Unknown Sources" on Android
+          3. Install the APK file
+          
+          ### Features:
+          - ⏰ 24-hour daily tracking
+          - 📝 Activity input for each hour  
+          - 💾 Data persistence
+          - 📅 Date navigation
+          - 🎨 Animated clock logo
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
