@@ -1,0 +1,49 @@
+name: hour_tracker
+description: A Flutter app to track hourly activities throughout the day.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  shared_preferences: ^2.2.2
+  intl: ^0.18.1
+  fl_chart: ^0.65.0
+  provider: ^6.1.1
+  google_fonts: ^6.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  # Assets (optional)
+  assets:
+    - assets/
+
+# Flutter Launcher Icons configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  web:
+    generate: true
+    background_color: "#667eea"
+    theme_color: "#764ba2"
+  windows:
+    generate: true
+    icon_size: 48
+  macos:
+    generate: true
+  
+  # Use a simple approach - we'll create the icon manually
+  image_path: "assets/icon.png"

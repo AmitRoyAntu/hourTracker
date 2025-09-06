@@ -1,0 +1,47 @@
+<!-- Placeholder 1024x1024 icon for flutter_launcher_icons -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Background with rounded corners -->
+  <rect width="1024" height="1024" rx="180" fill="#667eea"/>
+  
+  <!-- Gradient overlay -->
+  <defs>
+    <radialGradient id="grad1" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <rect width="1024" height="1024" rx="180" fill="url(#grad1)"/>
+  
+  <!-- Main clock circle -->
+  <circle cx="512" cy="512" r="280" fill="white" stroke="#e2e8f0" stroke-width="8"/>
+  
+  <!-- Hour markers -->
+  <rect x="502" y="260" width="20" height="60" fill="#334155" rx="10"/>
+  <rect x="704" y="502" width="60" height="20" fill="#334155" rx="10"/>
+  <rect x="502" y="704" width="20" height="60" fill="#334155" rx="10"/>
+  <rect x="260" y="502" width="60" height="20" fill="#334155" rx="10"/>
+  
+  <!-- Additional markers -->
+  <circle cx="512" cy="320" r="12" fill="#64748b"/>
+  <circle cx="654" cy="410" r="12" fill="#64748b"/>
+  <circle cx="654" cy="614" r="12" fill="#64748b"/>
+  <circle cx="512" cy="704" r="12" fill="#64748b"/>
+  <circle cx="370" cy="614" r="12" fill="#64748b"/>
+  <circle cx="370" cy="410" r="12" fill="#64748b"/>
+  
+  <!-- Clock hands -->
+  <line x1="512" y1="512" x2="640" y2="512" stroke="#667eea" stroke-width="20" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="512" y2="360" stroke="#764ba2" stroke-width="16" stroke-linecap="round"/>
+  
+  <!-- Center circle -->
+  <circle cx="512" cy="512" r="32" fill="#667eea"/>
+  <circle cx="512" cy="512" r="20" fill="white"/>
+  
+  <!-- Activity indicator -->
+  <circle cx="680" cy="344" r="80" fill="#10b981" stroke="white" stroke-width="16"/>
+  <path d="M 640 344 L 665 369 L 720 314" stroke="white" stroke-width="16" fill="none" stroke-linecap="round"/>
+  
+  <!-- App identifier -->
+  <text x="512" y="880" text-anchor="middle" font-family="system-ui, sans-serif" font-size="80" font-weight="bold" fill="white" opacity="0.9">⏰</text>
+</svg>

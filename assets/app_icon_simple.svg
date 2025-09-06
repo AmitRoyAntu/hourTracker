@@ -1,0 +1,36 @@
+<!-- Simple Hour Tracker App Icon for PNG conversion -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background circle with gradient -->
+  <circle cx="256" cy="256" r="256" fill="#667eea"/>
+  <circle cx="256" cy="256" r="240" fill="#764ba2"/>
+  <circle cx="256" cy="256" r="220" fill="#667eea"/>
+  
+  <!-- Clock face -->
+  <circle cx="256" cy="256" r="180" fill="#ffffff" stroke="#e2e8f0" stroke-width="4"/>
+  
+  <!-- Hour markers (12, 3, 6, 9) -->
+  <rect x="251" y="90" width="10" height="30" fill="#334155" rx="5"/>
+  <rect x="390" y="251" width="30" height="10" fill="#334155" rx="5"/>
+  <rect x="251" y="390" width="10" height="30" fill="#334155" rx="5"/>
+  <rect x="90" y="251" width="30" height="10" fill="#334155" rx="5"/>
+  
+  <!-- Secondary markers -->
+  <circle cx="256" cy="130" r="6" fill="#64748b"/>
+  <circle cx="382" cy="256" r="6" fill="#64748b"/>
+  <circle cx="256" cy="382" r="6" fill="#64748b"/>
+  <circle cx="130" cy="256" r="6" fill="#64748b"/>
+  
+  <!-- Hour hand (pointing to 3 PM) -->
+  <line x1="256" y1="256" x2="340" y2="256" stroke="#667eea" stroke-width="12" stroke-linecap="round"/>
+  
+  <!-- Minute hand (pointing to 12) -->
+  <line x1="256" y1="256" x2="256" y2="180" stroke="#764ba2" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Center dot -->
+  <circle cx="256" cy="256" r="16" fill="#667eea"/>
+  <circle cx="256" cy="256" r="10" fill="#ffffff"/>
+  
+  <!-- Activity checkmark -->
+  <circle cx="350" cy="162" r="35" fill="#10b981"/>
+  <path d="M 330 162 L 345 177 L 370 147" stroke="#ffffff" stroke-width="8" fill="none" stroke-linecap="round"/>
+</svg>

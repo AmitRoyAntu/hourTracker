@@ -1,0 +1,27 @@
+<!-- Simple Clock SVG for favicon -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="#667eea" stroke="#764ba2" stroke-width="2"/>
+  
+  <!-- Clock face -->
+  <circle cx="50" cy="50" r="35" fill="white" stroke="#ddd" stroke-width="1"/>
+  
+  <!-- Hour markers -->
+  <circle cx="50" cy="20" r="2" fill="#333"/>
+  <circle cx="80" cy="50" r="2" fill="#333"/>
+  <circle cx="50" cy="80" r="2" fill="#333"/>
+  <circle cx="20" cy="50" r="2" fill="#333"/>
+  
+  <!-- Hour hand (9 o'clock) -->
+  <line x1="50" y1="50" x2="35" y2="50" stroke="#667eea" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Minute hand (12 o'clock) -->
+  <line x1="50" y1="50" x2="50" y2="25" stroke="#764ba2" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Center dot -->
+  <circle cx="50" cy="50" r="3" fill="#667eea"/>
+  
+  <!-- Activity indicator -->
+  <circle cx="75" cy="25" r="8" fill="#4ade80"/>
+  <text x="75" y="30" text-anchor="middle" font-family="Arial" font-size="10" fill="white">✓</text>
+</svg>
