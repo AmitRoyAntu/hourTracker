@@ -7,9 +7,9 @@ class DailyActivityChart extends StatefulWidget {
   final DateTime date;
 
   const DailyActivityChart({
-    Key? key,
+    super.key,
     required this.date,
-  }) : super(key: key);
+  });
 
   @override
   State<DailyActivityChart> createState() => _DailyActivityChartState();

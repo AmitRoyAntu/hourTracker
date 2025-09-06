@@ -394,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          colorScheme.surfaceVariant.withOpacity(0.3),
+                          colorScheme.surfaceContainerHighest.withOpacity(0.3),
                           colorScheme.surface,
                         ],
                         begin: Alignment.topCenter,
@@ -488,7 +488,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           gradient: LinearGradient(
                             colors: [
                               colorScheme.surface,
-                              colorScheme.surfaceVariant.withOpacity(0.3),
+                              colorScheme.surfaceContainerHighest.withOpacity(0.3),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -622,7 +622,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: colorScheme.surfaceVariant.withOpacity(0.5),
+                                      color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Icon(

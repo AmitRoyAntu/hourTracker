@@ -8,10 +8,10 @@ class WeeklyOverviewWidget extends StatefulWidget {
   final VoidCallback? onTap;
 
   const WeeklyOverviewWidget({
-    Key? key,
+    super.key,
     required this.selectedDate,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<WeeklyOverviewWidget> createState() => _WeeklyOverviewWidgetState();
@@ -188,7 +188,7 @@ class _WeeklyOverviewWidgetState extends State<WeeklyOverviewWidget> {
                             horizontalInterval: 6,
                             getDrawingHorizontalLine: (value) {
                               return FlLine(
-                                color: colorScheme.surfaceVariant,
+                                color: colorScheme.surfaceContainerHighest,
                                 strokeWidth: 1,
                               );
                             },
@@ -254,7 +254,7 @@ class _WeeklyOverviewWidgetState extends State<WeeklyOverviewWidget> {
     if (value >= 18) return colorScheme.primary;
     if (value >= 12) return colorScheme.secondary;
     if (value >= 6) return colorScheme.tertiary;
-    return colorScheme.surfaceVariant;
+    return colorScheme.surfaceContainerHighest;
   }
 
   Widget _buildWeeklyStatCard(String label, String value, IconData icon, Color color, ThemeData theme) {

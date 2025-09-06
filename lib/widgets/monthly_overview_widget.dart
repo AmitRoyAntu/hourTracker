@@ -8,10 +8,10 @@ class MonthlyOverviewWidget extends StatefulWidget {
   final VoidCallback? onTap;
 
   const MonthlyOverviewWidget({
-    Key? key,
+    super.key,
     required this.selectedDate,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<MonthlyOverviewWidget> createState() => _MonthlyOverviewWidgetState();
@@ -154,7 +154,7 @@ class _MonthlyOverviewWidgetState extends State<MonthlyOverviewWidget> {
                             horizontalInterval: 6,
                             getDrawingHorizontalLine: (value) {
                               return FlLine(
-                                color: colorScheme.surfaceVariant,
+                                color: colorScheme.surfaceContainerHighest,
                                 strokeWidth: 1,
                               );
                             },

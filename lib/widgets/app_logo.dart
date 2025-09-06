@@ -17,178 +17,173 @@ class AppLogo extends StatefulWidget {
 
 class _AppLogoState extends State<AppLogo>
     with TickerProviderStateMixin {
-  late AnimationController _controller;
+  late AnimationController _rotationController;
   late Animation<double> _rotationAnimation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 60),
+    _rotationController = AnimationController(
+      duration: const Duration(seconds: 60), // One full rotation per minute
       vsync: this,
     );
+    
     _rotationAnimation = Tween<double>(
       begin: 0,
       end: 2 * math.pi,
     ).animate(CurvedAnimation(
-      parent: _controller,
+      parent: _rotationController,
       curve: Curves.linear,
     ));
 
     if (widget.animated) {
-      _controller.repeat();
+      _rotationController.repeat();
     }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _rotationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     
-    return Container(
+    return SizedBox(
       width: widget.size,
       height: widget.size,
       child: widget.animated
           ? AnimatedBuilder(
               animation: _rotationAnimation,
               builder: (context, child) {
-                return Transform.rotate(
-                  angle: _rotationAnimation.value,
-                  child: _buildClockFace(colorScheme),
+                return CustomPaint(
+                  painter: ClockLogoPainter(
+                    rotation: _rotationAnimation.value,
+                    isDark: isDark,
+                  ),
                 );
               },
             )
-          : _buildClockFace(colorScheme),
-    );
-  }
-
-  Widget _buildClockFace(ColorScheme colorScheme) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [
-            colorScheme.primary,
-            colorScheme.secondary,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.primary.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Clock face background
-          Container(
-            margin: EdgeInsets.all(widget.size * 0.1),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: colorScheme.surface,
-              border: Border.all(
-                color: colorScheme.outline.withOpacity(0.3),
-                width: 1,
+          : CustomPaint(
+              painter: ClockLogoPainter(
+                rotation: 0,
+                isDark: isDark,
               ),
             ),
-          ),
-          // Hour markers
-          ...List.generate(12, (index) => _buildHourMarker(index, colorScheme)),
-          // Clock hands
-          _buildClockHands(colorScheme),
-          // Center dot
-          Center(
-            child: Container(
-              width: widget.size * 0.08,
-              height: widget.size * 0.08,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: colorScheme.primary,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
+}
 
-  Widget _buildHourMarker(int hour, ColorScheme colorScheme) {
-    final angle = (hour * 30 - 90) * math.pi / 180;
-    final radius = widget.size * 0.35;
-    final markerSize = hour % 3 == 0 ? widget.size * 0.03 : widget.size * 0.02;
+class ClockLogoPainter extends CustomPainter {
+  final double rotation;
+  final bool isDark;
+
+  ClockLogoPainter({
+    required this.rotation,
+    required this.isDark,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+
+    // Background gradient
+    final gradientColors = isDark 
+        ? [const Color(0xFF667eea), const Color(0xFF764ba2)]
+        : [const Color(0xFF667eea), const Color(0xFF764ba2)];
     
-    return Positioned(
-      left: widget.size / 2 + radius * math.cos(angle) - markerSize / 2,
-      top: widget.size / 2 + radius * math.sin(angle) - markerSize / 2,
-      child: Container(
-        width: markerSize,
-        height: markerSize,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: hour % 3 == 0 
-              ? colorScheme.primary 
-              : colorScheme.outline,
-        ),
-      ),
-    );
-  }
+    final backgroundPaint = Paint()
+      ..shader = LinearGradient(
+        colors: gradientColors,
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ).createShader(Rect.fromCircle(center: center, radius: radius));
 
-  Widget _buildClockHands(ColorScheme colorScheme) {
+    // Draw background circle
+    canvas.drawCircle(center, radius * 0.9, backgroundPaint);
+
+    // Draw clock face
+    final facePaint = Paint()
+      ..color = Colors.white.withOpacity(0.9)
+      ..style = PaintingStyle.fill;
+    
+    canvas.drawCircle(center, radius * 0.8, facePaint);
+
+    // Draw hour markers
+    final markerPaint = Paint()
+      ..color = const Color(0xFF667eea)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    for (int i = 0; i < 12; i++) {
+      final angle = (i * 30) * math.pi / 180;
+      final startX = center.dx + (radius * 0.7) * math.cos(angle - math.pi / 2);
+      final startY = center.dy + (radius * 0.7) * math.sin(angle - math.pi / 2);
+      final endX = center.dx + (radius * 0.6) * math.cos(angle - math.pi / 2);
+      final endY = center.dy + (radius * 0.6) * math.sin(angle - math.pi / 2);
+      
+      canvas.drawLine(
+        Offset(startX, startY),
+        Offset(endX, endY),
+        markerPaint,
+      );
+    }
+
+    // Draw hour hand (current hour)
     final now = DateTime.now();
-    final hourAngle = ((now.hour % 12) * 30 + now.minute * 0.5 - 90) * math.pi / 180;
-    final minuteAngle = (now.minute * 6 - 90) * math.pi / 180;
+    final hourAngle = ((now.hour % 12) * 30 + now.minute * 0.5) * math.pi / 180;
+    final hourHandPaint = Paint()
+      ..color = const Color(0xFF667eea)
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
+
+    final hourHandX = center.dx + (radius * 0.4) * math.cos(hourAngle - math.pi / 2);
+    final hourHandY = center.dy + (radius * 0.4) * math.sin(hourAngle - math.pi / 2);
     
-    return Stack(
-      children: [
-        // Hour hand
-        _buildHand(
-          angle: hourAngle,
-          length: widget.size * 0.25,
-          width: widget.size * 0.025,
-          color: colorScheme.primary,
-        ),
-        // Minute hand
-        _buildHand(
-          angle: minuteAngle,
-          length: widget.size * 0.35,
-          width: widget.size * 0.015,
-          color: colorScheme.secondary,
-        ),
-      ],
-    );
+    canvas.drawLine(center, Offset(hourHandX, hourHandY), hourHandPaint);
+
+    // Draw minute hand (with rotation animation)
+    final minuteAngle = rotation;
+    final minuteHandPaint = Paint()
+      ..color = const Color(0xFF764ba2)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+
+    final minuteHandX = center.dx + (radius * 0.6) * math.cos(minuteAngle - math.pi / 2);
+    final minuteHandY = center.dy + (radius * 0.6) * math.sin(minuteAngle - math.pi / 2);
+    
+    canvas.drawLine(center, Offset(minuteHandX, minuteHandY), minuteHandPaint);
+
+    // Draw center dot
+    final centerPaint = Paint()
+      ..color = const Color(0xFF667eea)
+      ..style = PaintingStyle.fill;
+    
+    canvas.drawCircle(center, radius * 0.05, centerPaint);
+
+    // Draw activity indicator dots around the edge
+    final activityPaint = Paint()
+      ..color = Colors.green
+      ..style = PaintingStyle.fill;
+
+    for (int i = 0; i < 24; i++) {
+      final angle = (i * 15) * math.pi / 180;
+      final dotX = center.dx + (radius * 0.95) * math.cos(angle - math.pi / 2);
+      final dotY = center.dy + (radius * 0.95) * math.sin(angle - math.pi / 2);
+      
+      // Simulate some activity data
+      if (i % 3 == 0) {
+        canvas.drawCircle(Offset(dotX, dotY), 2, activityPaint);
+      }
+    }
   }
 
-  Widget _buildHand({
-    required double angle,
-    required double length,
-    required double width,
-    required Color color,
-  }) {
-    return Positioned(
-      left: widget.size / 2 - width / 2,
-      top: widget.size / 2 - width / 2,
-      child: Transform.rotate(
-        angle: angle,
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          width: width,
-          height: length,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(width / 2),
-          ),
-        ),
-      ),
-    );
+  @override
+  bool shouldRepaint(ClockLogoPainter oldDelegate) {
+    return oldDelegate.rotation != rotation || oldDelegate.isDark != isDark;
   }
 }

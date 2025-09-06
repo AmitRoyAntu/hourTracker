@@ -8,10 +8,10 @@ class DailyOverviewWidget extends StatefulWidget {
   final VoidCallback? onTap;
 
   const DailyOverviewWidget({
-    Key? key,
+    super.key,
     required this.selectedDate,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<DailyOverviewWidget> createState() => _DailyOverviewWidgetState();
@@ -228,7 +228,7 @@ class _DailyOverviewWidgetState extends State<DailyOverviewWidget>
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: colorScheme.surfaceVariant.withOpacity(0.5),
+                                color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(
@@ -264,7 +264,7 @@ class _DailyOverviewWidgetState extends State<DailyOverviewWidget>
                                       ? Container(
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: colorScheme.surfaceVariant.withOpacity(0.3),
+                                            color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
                                             border: Border.all(
                                               color: colorScheme.outline.withOpacity(0.3),
                                               width: 2,
@@ -289,7 +289,7 @@ class _DailyOverviewWidgetState extends State<DailyOverviewWidget>
                                               ),
                                               if (_emptyHours > 0)
                                                 PieChartSectionData(
-                                                  color: colorScheme.surfaceVariant,
+                                                  color: colorScheme.surfaceContainerHighest,
                                                   value: (_emptyHours * _chartAnimation.value).toDouble(),
                                                   title: '',
                                                   radius: 30,
@@ -319,7 +319,7 @@ class _DailyOverviewWidgetState extends State<DailyOverviewWidget>
                                     'Empty Hours',
                                     _emptyHours,
                                     24,
-                                    colorScheme.surfaceVariant,
+                                    colorScheme.surfaceContainerHighest,
                                     Icons.schedule_rounded,
                                     theme,
                                   ),

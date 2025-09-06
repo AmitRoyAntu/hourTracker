@@ -164,7 +164,7 @@ class _HourTileState extends State<HourTile> {
                     ? Container(
                         height: 52,
                         decoration: BoxDecoration(
-                          color: colorScheme.surfaceVariant.withOpacity(0.5),
+                          color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Center(
