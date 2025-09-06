@@ -16,181 +16,179 @@ class AppLogo extends StatefulWidget {
 }
 
 class _AppLogoState extends State<AppLogo>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _rotationController;
+    with TickerProviderStateMixin {
+  late AnimationController _controller;
   late Animation<double> _rotationAnimation;
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 60),
+      vsync: this,
+    );
+    _rotationAnimation = Tween<double>(
+      begin: 0,
+      end: 2 * math.pi,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.linear,
+    ));
+
     if (widget.animated) {
-      _rotationController = AnimationController(
-        duration: const Duration(seconds: 60),
-        vsync: this,
-      );
-      _rotationAnimation = Tween<double>(
-        begin: 0,
-        end: 1,
-      ).animate(_rotationController);
-      _rotationController.repeat();
+      _controller.repeat();
     }
   }
 
   @override
   void dispose() {
-    if (widget.animated) {
-      _rotationController.dispose();
-    }
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     
-    Widget clockWidget = Container(
+    return Container(
       width: widget.size,
       height: widget.size,
+      child: widget.animated
+          ? AnimatedBuilder(
+              animation: _rotationAnimation,
+              builder: (context, child) {
+                return Transform.rotate(
+                  angle: _rotationAnimation.value,
+                  child: _buildClockFace(colorScheme),
+                );
+              },
+            )
+          : _buildClockFace(colorScheme),
+    );
+  }
+
+  Widget _buildClockFace(ColorScheme colorScheme) {
+    return Container(
       decoration: BoxDecoration(
+        shape: BoxShape.circle,
         gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
           colors: [
             colorScheme.primary,
-            colorScheme.primaryContainer,
             colorScheme.secondary,
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(widget.size * 0.2),
         boxShadow: [
           BoxShadow(
             color: colorScheme.primary.withOpacity(0.3),
-            blurRadius: widget.size * 0.2,
-            offset: Offset(0, widget.size * 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Stack(
         children: [
-          // Clock face
-          Center(
-            child: Container(
-              width: widget.size * 0.85,
-              height: widget.size * 0.85,
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: colorScheme.onSurface.withOpacity(0.2),
-                  width: 2,
-                ),
-              ),
-              child: Stack(
-                children: [
-                  // Hour markers
-                  ...List.generate(12, (index) {
-                    final angle = (index * 30) * (3.14159 / 180);
-                    final isMainHour = index % 3 == 0;
-                    return Positioned(
-                      left: widget.size * 0.425 + (widget.size * 0.32) * math.cos(angle - 3.14159 / 2) - (isMainHour ? 2 : 1),
-                      top: widget.size * 0.425 + (widget.size * 0.32) * math.sin(angle - 3.14159 / 2) - (isMainHour ? 2 : 1),
-                      child: Container(
-                        width: isMainHour ? 4 : 2,
-                        height: isMainHour ? 4 : 2,
-                        decoration: BoxDecoration(
-                          color: colorScheme.onSurface.withOpacity(isMainHour ? 0.8 : 0.4),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    );
-                  }),
-                  
-                  // Hour hand
-                  Center(
-                    child: Transform.rotate(
-                      angle: (9 * 30) * (3.14159 / 180), // 9 o'clock position
-                      child: Container(
-                        width: 2,
-                        height: widget.size * 0.25,
-                        margin: EdgeInsets.only(bottom: widget.size * 0.25),
-                        decoration: BoxDecoration(
-                          color: colorScheme.primary,
-                          borderRadius: BorderRadius.circular(1),
-                        ),
-                      ),
-                    ),
-                  ),
-                  
-                  // Minute hand
-                  Center(
-                    child: Transform.rotate(
-                      angle: (0 * 6) * (3.14159 / 180), // 12 o'clock position
-                      child: Container(
-                        width: 1.5,
-                        height: widget.size * 0.35,
-                        margin: EdgeInsets.only(bottom: widget.size * 0.35),
-                        decoration: BoxDecoration(
-                          color: colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(0.75),
-                        ),
-                      ),
-                    ),
-                  ),
-                  
-                  // Center dot
-                  Center(
-                    child: Container(
-                      width: widget.size * 0.08,
-                      height: widget.size * 0.08,
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ],
+          // Clock face background
+          Container(
+            margin: EdgeInsets.all(widget.size * 0.1),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colorScheme.surface,
+              border: Border.all(
+                color: colorScheme.outline.withOpacity(0.3),
+                width: 1,
               ),
             ),
           ),
-          
-          // Activity indicator
-          Positioned(
-            right: widget.size * 0.05,
-            top: widget.size * 0.05,
+          // Hour markers
+          ...List.generate(12, (index) => _buildHourMarker(index, colorScheme)),
+          // Clock hands
+          _buildClockHands(colorScheme),
+          // Center dot
+          Center(
             child: Container(
-              width: widget.size * 0.15,
-              height: widget.size * 0.15,
+              width: widget.size * 0.08,
+              height: widget.size * 0.08,
               decoration: BoxDecoration(
-                color: Colors.green,
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: colorScheme.surface,
-                  width: 2,
-                ),
-              ),
-              child: Icon(
-                Icons.check,
-                color: Colors.white,
-                size: widget.size * 0.08,
+                color: colorScheme.primary,
               ),
             ),
           ),
         ],
       ),
     );
+  }
 
-    if (widget.animated) {
-      return AnimatedBuilder(
-        animation: _rotationAnimation,
-        builder: (context, child) {
-          return Transform.rotate(
-            angle: _rotationAnimation.value * 2 * 3.14159,
-            child: clockWidget,
-          );
-        },
-      );
-    }
+  Widget _buildHourMarker(int hour, ColorScheme colorScheme) {
+    final angle = (hour * 30 - 90) * math.pi / 180;
+    final radius = widget.size * 0.35;
+    final markerSize = hour % 3 == 0 ? widget.size * 0.03 : widget.size * 0.02;
+    
+    return Positioned(
+      left: widget.size / 2 + radius * math.cos(angle) - markerSize / 2,
+      top: widget.size / 2 + radius * math.sin(angle) - markerSize / 2,
+      child: Container(
+        width: markerSize,
+        height: markerSize,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: hour % 3 == 0 
+              ? colorScheme.primary 
+              : colorScheme.outline,
+        ),
+      ),
+    );
+  }
 
-    return clockWidget;
+  Widget _buildClockHands(ColorScheme colorScheme) {
+    final now = DateTime.now();
+    final hourAngle = ((now.hour % 12) * 30 + now.minute * 0.5 - 90) * math.pi / 180;
+    final minuteAngle = (now.minute * 6 - 90) * math.pi / 180;
+    
+    return Stack(
+      children: [
+        // Hour hand
+        _buildHand(
+          angle: hourAngle,
+          length: widget.size * 0.25,
+          width: widget.size * 0.025,
+          color: colorScheme.primary,
+        ),
+        // Minute hand
+        _buildHand(
+          angle: minuteAngle,
+          length: widget.size * 0.35,
+          width: widget.size * 0.015,
+          color: colorScheme.secondary,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHand({
+    required double angle,
+    required double length,
+    required double width,
+    required Color color,
+  }) {
+    return Positioned(
+      left: widget.size / 2 - width / 2,
+      top: widget.size / 2 - width / 2,
+      child: Transform.rotate(
+        angle: angle,
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          width: width,
+          height: length,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(width / 2),
+          ),
+        ),
+      ),
+    );
   }
 }

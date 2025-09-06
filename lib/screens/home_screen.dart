@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const AppLogo(size: 28, animated: false),
+                  AppLogo(size: 28, animated: false),
                   const SizedBox(width: 8),
                   const Text('Hour Tracker'),
                 ],
@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Row(
                     children: [
-                      const AppLogo(size: 64, animated: true),
+                      AppLogo(size: 64, animated: true),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
